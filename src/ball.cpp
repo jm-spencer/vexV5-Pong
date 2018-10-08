@@ -1,21 +1,28 @@
 #include "main.h"
 #include "ball.hpp"
+#include "paddle.hpp"
 #include <math.h>
 #include <iostream>
 #include <random>
 
-movingObject::movingObject(lv_obj_t* image_ptr,
-                           const int initalX,
-                           const int initalY,
-                           const double initialVelocity,
-                           const double initialHeading):
+movingObject::movingObject(lv_obj_t* screen_ptr,
+                           lv_style_t style,
+                           const int inital_X,
+                           const int inital_Y,
+                           const double initial_velocity,
+                           const double initial_heading):
 
-                           image(image_ptr),
-                           x(initalX),
-                           y(initalY),
-                           velocity(initialVelocity),
-                           heading(initialHeading)
+                           x(inital_X),
+                           y(inital_Y),
+                           velocity(initial_velocity),
+                           heading(initial_heading)
 {
+  image = lv_obj_create(screen_ptr, NULL);
+  lv_obj_set_size(image, width, height);
+
+  lv_obj_set_style(image, &style);
+  lv_obj_refresh_style(image);
+
   print();
 }
 
@@ -29,19 +36,12 @@ void movingObject::changeHeading(const double new_heading){
 }
 
 void movingObject::print(){
-  lv_obj_set_pos(image, x, y);
+  lv_obj_set_pos(image, x - (width / 2), y - (height / 2));
 }
 
-int movingObject::getY(){
-  return y;
-}
-
-int movingObject::getX(){
-  return x;
-}
-
-int movingObject::iterate(int left_paddle, int right_paddle, bool* miss){
+int movingObject::iterate(paddle left_paddle, paddle right_paddle, bool* miss){
   //step values
+  //const int buffer = 3;
   double x_prime = x + (cos(heading) * velocity);
   double y_prime = y - (sin(heading) * velocity);
 
@@ -56,24 +56,24 @@ int movingObject::iterate(int left_paddle, int right_paddle, bool* miss){
     heading *= -1; //reflect the heading over y=0 (unit circle)
   }
 
-  if(x_prime < 25 && !(*miss)){ //left paddle
-    int intersection_y = ((25 - x) * tan(heading)) + y;
+  if(x_prime < left_paddle.right_position && !(*miss)){ //left paddle
+    int intersection_y = ((left_paddle.right_position - x) * tan(heading)) + y;
 
-    if(intersection_y >= left_paddle - 3 && intersection_y <= left_paddle + 53){
-      x_prime = 50 - x_prime;   //reflection over x=20
+    if(intersection_y >= left_paddle.top_position && intersection_y <= left_paddle.bottom_position){
+      x_prime = (2 * left_paddle.right_position) - x_prime;   //reflection over x=20
 
-      heading = asin(double(left_paddle + 25 - intersection_y) / 30); //change heading based on where the ball is on the paddle
+      heading = asin(double(left_paddle.top_position + (left_paddle.height / 2) - intersection_y) / (left_paddle.height / 2))  ; //change heading based on where the ball is on the paddle
     }else{
       *miss = true;
     }
 
-  }else if(x_prime > 455 && !(*miss)){
-    int intersection_y = ((455 - x) * tan(heading)) + y;
+  }else if(x_prime > right_paddle.left_position && !(*miss)){
+    int intersection_y = ((right_paddle.left_position - x) * tan(heading)) + y;
 
-    if(intersection_y >= right_paddle - 3 && intersection_y <= right_paddle + 53){
-      x_prime = 910 - x_prime; //reflection over x=460
+    if(intersection_y >= right_paddle.top_position && intersection_y <= right_paddle.bottom_position){
+      x_prime = (2 * right_paddle.left_position) - x_prime; //reflection over x=455
 
-      heading = M_PI - asin(double(right_paddle + 25 - intersection_y) / 30); //change heading based on where the ball is on the paddle
+      heading = M_PI - asin(double(right_paddle.top_position + (left_paddle.height / 2) - intersection_y) / (left_paddle.height / 2)); //change heading based on where the ball is on the paddle
     }else{
       *miss = true;
     }
@@ -91,10 +91,10 @@ int movingObject::iterate(int left_paddle, int right_paddle, bool* miss){
   return 0;
 }
 
-double get_random_heading(const bool goRight){
+double get_random_heading(const bool go_right){
 
-  double max = goRight ? M_PI /  3.0 : M_PI * (4.0 / 3.0);
-  double min = goRight ? M_PI / -3.0 : M_PI * (2.0 / 3.0);
+  double max = go_right ? M_PI /  3.0 : M_PI * (4.0 / 3.0);
+  double min = go_right ? M_PI / -3.0 : M_PI * (2.0 / 3.0);
 
   return (max - min) * ( (double)rand() / (double)RAND_MAX ) + min;
 }

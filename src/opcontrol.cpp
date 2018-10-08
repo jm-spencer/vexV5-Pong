@@ -1,5 +1,6 @@
 #include "main.h"
 #include "ball.hpp"
+#include "paddle.hpp"
 #include <string>
 
 //Made by Joseph from VRC 5588D
@@ -74,14 +75,13 @@ void opcontrol() {
   lv_obj_refresh_style(scr);
 
   while(left_score < win_score && right_score < win_score){
-    int left_paddle_pos = 95, right_paddle_pos = 95;
+
     bool missed = false;
     int reset = 0;
 
     //initialize lvgl objects
 
     //middle line
-
     lv_obj_t* middle_line = lv_obj_create(scr, NULL);
     lv_obj_set_size(middle_line, 6, 240);
     lv_obj_set_pos(middle_line, 237, 0);
@@ -89,60 +89,27 @@ void opcontrol() {
     lv_obj_set_style(middle_line, &line_style);
     lv_obj_refresh_style(middle_line);
 
-    //left paddle
-    lv_obj_t* left_paddle = lv_obj_create(scr, NULL);
-    lv_obj_set_size(left_paddle, 5, 50);
-    lv_obj_set_pos(left_paddle, 20, 95);
-
-    lv_obj_set_style(left_paddle, &left_paddle_style);
-    lv_obj_refresh_style(left_paddle);
-
-    //right paddle
-    lv_obj_t* right_paddle = lv_obj_create(scr, left_paddle);
-    lv_obj_set_pos(right_paddle, 455, 95);
-
-    lv_obj_set_style(right_paddle, &right_paddle_style);
-    lv_obj_refresh_style(right_paddle);
+    //paddles
+    paddle left_paddle(scr, left_paddle_style, 20, 95);
+    paddle right_paddle(scr, right_paddle_style, 455, 95);
 
     //ball
-    lv_obj_t* ball_image = lv_obj_create(scr, NULL);
-    lv_obj_set_size(ball_image, 6, 6);
-
-    lv_obj_set_style(ball_image, &ball_style);
-    lv_obj_refresh_style(ball_image);
-
-    movingObject ball(ball_image, 237, 120, initial_speed, get_random_heading(left_score < right_score));
+    movingObject ball(scr, ball_style, 240, 120, initial_speed, get_random_heading(left_score < right_score));
 
     pros::delay(1000);
 
     while(!reset){
       //control
-      left_delta = main_controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / paddle_dampening_value;
-      right_delta = main_controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / paddle_dampening_value;
+      left_paddle.move(
+        main_controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / paddle_dampening_value);
+      right_paddle.move(
+        main_controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / paddle_dampening_value);
 
-
-      if(left_paddle_pos + left_delta < 2){
-        left_paddle_pos = 2;
-      }else if(left_paddle_pos + left_delta > 188){
-        left_paddle_pos = 188;
-      }else{
-        left_paddle_pos += left_delta;
-      }
-
-      if(right_paddle_pos + right_delta < 2){
-        right_paddle_pos = 2;
-      }else if(right_paddle_pos + right_delta > 188){
-        right_paddle_pos = 188;
-      }else{
-        right_paddle_pos += right_delta;
-      }
-
-      reset = ball.iterate(left_paddle_pos, right_paddle_pos, &missed);
+      reset = ball.iterate(left_paddle, right_paddle, &missed);
 
       //update screen
-      lv_obj_set_y(left_paddle, left_paddle_pos);
-      lv_obj_set_y(right_paddle, right_paddle_pos);
-      ball.print();
+      left_paddle.print();
+      right_paddle.print();
 
       ball.increaseVelocity(acceleration);
       pros::delay(16);
