@@ -20,6 +20,6 @@ public:
   int iterate(int left_paddle, int right_paddle, bool* miss);
 };
 
-double getRandomHeading(const bool goRight);
+double get_random_heading(const bool goRight);
 
 #endif

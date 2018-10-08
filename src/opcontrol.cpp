@@ -8,12 +8,13 @@
 void opcontrol() {
   //config
   constexpr int paddle_dampening_value = -30;//must be negative
-  constexpr double initialSpeed = 4.5;
+  constexpr double initial_speed = 4.5;
   constexpr double acceleration = 0.003;
+  constexpr int win_score = 7;
 
   //initialization
-  pros::Controller mainController(pros::E_CONTROLLER_MASTER);
-  mainController.set_text(2, 8, "0  /  0");
+  pros::Controller main_controller(pros::E_CONTROLLER_MASTER);
+  main_controller.set_text(2, 8, "0  /  0");
 
   int left_delta, right_delta;
 
@@ -72,7 +73,7 @@ void opcontrol() {
   lv_obj_set_style(scr, &screen_style);
   lv_obj_refresh_style(scr);
 
-  while(left_score < 10 && right_score < 10){
+  while(left_score < win_score && right_score < win_score){
     int left_paddle_pos = 95, right_paddle_pos = 95;
     bool missed = false;
     int reset = 0;
@@ -110,14 +111,14 @@ void opcontrol() {
     lv_obj_set_style(ball_image, &ball_style);
     lv_obj_refresh_style(ball_image);
 
-    movingObject ball(ball_image, 237, 120, initialSpeed, getRandomHeading(left_score < right_score));
+    movingObject ball(ball_image, 237, 120, initial_speed, get_random_heading(left_score < right_score));
 
     pros::delay(1000);
 
     while(!reset){
       //control
-      left_delta = mainController.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / paddle_dampening_value;
-      right_delta = mainController.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / paddle_dampening_value;
+      left_delta = main_controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / paddle_dampening_value;
+      right_delta = main_controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / paddle_dampening_value;
 
 
       if(left_paddle_pos + left_delta < 2){
@@ -155,17 +156,17 @@ void opcontrol() {
     }
 
     const char* scoreboard = (std::to_string(left_score) + "  /  " + std::to_string(right_score)).c_str();
-    mainController.set_text(2, 8, scoreboard);
+    main_controller.set_text(2, 8, scoreboard);
 
     lv_obj_clean(scr);
   }
   //post - game
   pros::delay(100);
 
-  mainController.set_text(0, 4, "The winner is");
+  main_controller.set_text(0, 4, "The winner is");
   pros::delay(100);
 
-  mainController.set_text(1, 9, left_score > right_score ? " Left" : "Right");
+  main_controller.set_text(1, 9, left_score > right_score ? " Left" : "Right");
 
   while(true){
     pros::delay(100);

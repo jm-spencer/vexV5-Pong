@@ -91,7 +91,7 @@ int movingObject::iterate(int left_paddle, int right_paddle, bool* miss){
   return 0;
 }
 
-double getRandomHeading(const bool goRight){
+double get_random_heading(const bool goRight){
 
   double max = goRight ? M_PI /  3.0 : M_PI * (4.0 / 3.0);
   double min = goRight ? M_PI / -3.0 : M_PI * (2.0 / 3.0);
