@@ -4,10 +4,12 @@
 
 class paddle{
   lv_obj_t* image;
-  
+
 public:
   const int width = 5;
   const int height = 50;
+  const int control_dampening_value = 30;
+  
   int top_position;
   int left_position;
   int right_position;

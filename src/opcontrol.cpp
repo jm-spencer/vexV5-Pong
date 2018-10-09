@@ -8,7 +8,6 @@
 
 void opcontrol() {
   //config
-  constexpr int paddle_dampening_value = -30;//must be negative
   constexpr double initial_speed = 4.5;
   constexpr double acceleration = 0.003;
   constexpr int win_score = 7;
@@ -101,9 +100,9 @@ void opcontrol() {
     while(!reset){
       //control
       left_paddle.move(
-        main_controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / paddle_dampening_value);
+        main_controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
       right_paddle.move(
-        main_controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / paddle_dampening_value);
+        main_controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
 
       reset = ball.iterate(left_paddle, right_paddle, &missed);
 

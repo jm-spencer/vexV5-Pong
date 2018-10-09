@@ -23,7 +23,7 @@ void paddle::move(const int translation){
   }else if(bottom_position + translation > 238){
     top_position = 188;
   }else{
-    top_position += translation;
+    top_position -= translation  / control_dampening_value;
   }
 
   bottom_position = top_position + height;
