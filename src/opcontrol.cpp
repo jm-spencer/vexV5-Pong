@@ -21,7 +21,7 @@ void opcontrol() {
   int left_score = 0, right_score = 0;
 
   //styles
-  lv_style_t screen_style;
+  static lv_style_t screen_style;
   lv_style_copy(&screen_style, &lv_style_plain_color);
   lv_color_t black;
   black.red = 0x00;
@@ -30,7 +30,7 @@ void opcontrol() {
   screen_style.body.main_color = black;
   screen_style.body.grad_color = black;
 
-  lv_style_t line_style;
+  static lv_style_t line_style;
   lv_style_copy(&line_style, &lv_style_plain_color);
   lv_color_t gray;
   gray.red = 0xB0;
@@ -39,7 +39,7 @@ void opcontrol() {
   line_style.body.main_color = gray;
   line_style.body.grad_color = gray;
 
-  lv_style_t left_paddle_style;
+  static lv_style_t left_paddle_style;
   lv_style_copy(&left_paddle_style, &lv_style_plain_color);
   lv_color_t red;
   red.red = 0xFF;
@@ -48,7 +48,7 @@ void opcontrol() {
   left_paddle_style.body.main_color = red;
   left_paddle_style.body.grad_color = red;
 
-  lv_style_t right_paddle_style;
+  static lv_style_t right_paddle_style;
   lv_style_copy(&right_paddle_style, &lv_style_plain_color);
   lv_color_t blue;
   blue.red = 0x00;
@@ -57,7 +57,7 @@ void opcontrol() {
   right_paddle_style.body.main_color = blue;
   right_paddle_style.body.grad_color = blue;
 
-  lv_style_t ball_style;
+  static lv_style_t ball_style;
   lv_style_copy(&ball_style, &lv_style_plain_color);
   lv_color_t white;
   white.red = 0xFF;
@@ -67,7 +67,7 @@ void opcontrol() {
   ball_style.body.grad_color = white;
 
   //initialize screen
-  lv_obj_t* scr = lv_obj_create(NULL, NULL);
+  static lv_obj_t* scr = lv_obj_create(NULL, NULL);
   lv_scr_load(scr);
 
   lv_obj_set_style(scr, &screen_style);
@@ -103,14 +103,15 @@ void opcontrol() {
       //control
       left_paddle.move(
         main_controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+        
       right_paddle.move(
         main_controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
 
       //Update Screen
-      //reset = ball.iterate(left_paddle, right_paddle, &missed);
+      reset = ball.iterate(left_paddle, right_paddle, &missed);
 
-      //left_paddle.print();
-      //right_paddle.print();
+      left_paddle.print();
+      right_paddle.print();
 
       ball.increaseVelocity(acceleration);
       pros::delay(16);

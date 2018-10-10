@@ -164,11 +164,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/opcontrol.cpp.o",
-            "src\\opcontrol.cpp"
+            "bin/ball.cpp.o",
+            "src\\ball.cpp"
         ],
         "directory": "C:\\Users\\Mathman\\Code\\Vex\\TP\\vexV5-Pong",
-        "file": "src\\opcontrol.cpp"
+        "file": "src\\ball.cpp"
     },
     {
         "arguments": [
@@ -199,10 +199,10 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/ball.cpp.o",
-            "src\\ball.cpp"
+            "bin/opcontrol.cpp.o",
+            "src\\opcontrol.cpp"
         ],
         "directory": "C:\\Users\\Mathman\\Code\\Vex\\TP\\vexV5-Pong",
-        "file": "src\\ball.cpp"
+        "file": "src\\opcontrol.cpp"
     }
 ]
