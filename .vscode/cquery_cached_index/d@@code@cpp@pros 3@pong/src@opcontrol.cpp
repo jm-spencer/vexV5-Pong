@@ -61,6 +61,7 @@ void opcontrol() {
   white.blue = 0xFF;
   ball_style.body.main_color = white;
   ball_style.body.grad_color = white;
+  ball_style.body.radius = LV_RADIUS_CIRCLE;
 
   //initialize screen
   lv_obj_t* scr = lv_obj_create(NULL, NULL);
@@ -78,19 +79,20 @@ void opcontrol() {
 
     //middle line
     lv_obj_t* middle_line = lv_obj_create(scr, NULL);
-    lv_obj_set_size(middle_line, 6, 240);
-    lv_obj_set_pos(middle_line, 237, 0);
+    lv_obj_set_size(middle_line, 6, 240); //6 pixels wide, 240 tall
+    lv_obj_set_pos(middle_line, 237, 0);  //set in middle of screen
 
-    lv_obj_set_style(middle_line, &line_style);
+    lv_obj_set_style(middle_line, &line_style); //set color
+    lv_obj_refresh_style(middle_line);
 
     //paddles
-    paddle left_paddle(&left_paddle_style, 20, 95);
-    paddle right_paddle(&right_paddle_style, 455, 95);
+    paddle left_paddle(&left_paddle_style, 20, 95);   //middle of the screen, 20 pixels to the left
+    paddle right_paddle(&right_paddle_style, 455, 95);//middle of the screen, 20 pixles from the right
 
     //ball
     movingObject ball(&ball_style, 240, 120, initial_speed, get_random_heading(left_score < right_score));
+        //start in the middle of the screen
 
-    lv_obj_refresh_style(middle_line);
     pros::delay(1000);
 
     while(!reset){
@@ -103,6 +105,7 @@ void opcontrol() {
 
       //iterate
       reset = ball.step(left_paddle, right_paddle, &missed);
+      //
 
       //Update Screen
       left_paddle.print();
