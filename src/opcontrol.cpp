@@ -24,7 +24,7 @@ void opcontrol() {
     //initialize a variable to hold each player's score
 
   //styles
-
+  
   //define all the styles
   lv_style_t screen_style;
   lv_style_t line_style;

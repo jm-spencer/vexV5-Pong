@@ -152,6 +152,11 @@ class Controller {
 	 * \note Controller text setting is currently in beta, so continuous, fast
 	 * updates will not work well.
 	 *
+	 * This function uses the following values of errno when an error state is
+	 * reached:
+	 * EACCES - Another resource is currently trying to access the controller
+	 * port.
+	 *
 	 * \param line
 	 *        The line number at which the text will be displayed [0-2]
 	 * \param col
@@ -166,7 +171,7 @@ class Controller {
 	 */
 	template <typename... Params>
 	std::int32_t print(std::uint8_t line, std::uint8_t col, const char* fmt, Params... args) {
-		return pros::c::controller_print(_id, line, fmt, convert_args(args)...);
+		return pros::c::controller_print(_id, line, col, fmt, convert_args(args)...);
 	}
 
 	/**
@@ -174,6 +179,11 @@ class Controller {
 	 *
 	 * \note Controller text setting is currently in beta, so continuous, fast
 	 * updates will not work well.
+	 *
+	 * This function uses the following values of errno when an error state is
+	 * reached:
+	 * EACCES - Another resource is currently trying to access the controller
+	 * port.
 	 *
 	 * \param line
 	 *        The line number at which the text will be displayed [0-2]
@@ -193,6 +203,11 @@ class Controller {
 	 * \note Controller text setting is currently in beta, so continuous, fast
 	 * updates will not work well.
 	 *
+	 * This function uses the following values of errno when an error state is
+	 * reached:
+	 * EACCES - Another resource is currently trying to access the controller
+	 * port.
+	 *
 	 * \param line
 	 *        The line number to clear [0-2]
 	 *
@@ -202,10 +217,36 @@ class Controller {
 	std::int32_t clear_line(std::uint8_t line);
 
 	/**
+	 * Rumble the controller.
+	 *
+	 * \note Controller rumble activation is currently in beta, so continuous, fast
+	 * updates will not work well.
+	 *
+	 * This function uses the following values of errno when an error state is
+	 * reached:
+	 * EACCES - Another resource is currently trying to access the controller
+	 * port.
+	 *
+	 * \param rumble_pattern
+	 *				A string consisting of the characters '.', '-', and ' ', where dots
+	 *				are short rumbles, dashes are long rumbles, and spaces are pauses.
+	 *				Maximum supported length is 8 characters.
+	 *
+	 * \return 1 if the operation was successful or PROS_ERR if the operation
+	 * failed, setting errno.
+	 */
+	std::int32_t rumble(const char* rumble_pattern);
+
+	/**
 	 * Clears all of the lines on the controller screen.
 	 *
 	 * \note Controller text setting is currently in beta, so continuous, fast
 	 * updates will not work well.
+	 *
+	 * This function uses the following values of errno when an error state is
+	 * reached:
+	 * EACCES - Another resource is currently trying to access the controller
+	 * port.
 	 *
 	 * \return 1 if the operation was successful or PROS_ERR if the operation
 	 * failed, setting errno.

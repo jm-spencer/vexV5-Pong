@@ -74,12 +74,44 @@ typedef enum {
 	E_NOTIFY_ACTION_NO_OWRITE
 } notify_action_e_t;
 
+#ifdef PROS_USE_SIMPLE_NAMES
+#ifdef __cplusplus
+#define TASK_STATE_RUNNING pros::E_TASK_STATE_RUNNING
+#define TASK_STATE_READY pros::E_TASK_STATE_READY
+#define TASK_STATE_BLOCKED pros::E_TASK_STATE_BLOCKED
+#define TASK_STATE_SUSPENDED pros::E_TASK_STATE_SUSPENDED
+#define TASK_STATE_DELETED pros::E_TASK_STATE_DELETED
+#define TASK_STATE_INVALID pros::E_TASK_STATE_INVALID
+#define NOTIFY_ACTION_NONE pros::E_NOTIFY_ACTION_NONE
+#define NOTIFY_ACTION_BITS pros::E_NOTIFY_ACTION_BITS
+#define NOTIFY_ACTION_INCR pros::E_NOTIFY_ACTION_INCR
+#define NOTIFY_ACTION_OWRITE pros::E_NOTIFY_ACTION_OWRITE
+#define NOTIFY_ACTION_NO_OWRITE pros::E_NOTIFY_ACTION_NO_OWRITE
+#else
+#define TASK_STATE_RUNNING E_TASK_STATE_RUNNING
+#define TASK_STATE_READY E_TASK_STATE_READY
+#define TASK_STATE_BLOCKED E_TASK_STATE_BLOCKED
+#define TASK_STATE_SUSPENDED E_TASK_STATE_SUSPENDED
+#define TASK_STATE_DELETED E_TASK_STATE_DELETED
+#define TASK_STATE_INVALID E_TASK_STATE_INVALID
+#define NOTIFY_ACTION_NONE E_NOTIFY_ACTION_NONE
+#define NOTIFY_ACTION_BITS E_NOTIFY_ACTION_BITS
+#define NOTIFY_ACTION_INCR E_NOTIFY_ACTION_INCR
+#define NOTIFY_ACTION_OWRITE E_NOTIFY_ACTION_OWRITE
+#define NOTIFY_ACTION_NO_OWRITE E_NOTIFY_ACTION_NO_OWRITE
+#endif
+#endif
+
 typedef void* mutex_t;
 
 /**
  * Refers to the current task handle
  */
+#ifdef __cplusplus
+#define CURRENT_TASK ((pros::task_t)NULL)
+#else
 #define CURRENT_TASK ((task_t)NULL)
+#endif
 
 #ifdef __cplusplus
 namespace c {
@@ -123,7 +155,7 @@ task_t task_create(task_fn_t function, void* const parameters, uint32_t prio, co
                    const char* const name);
 
 /**
- * Removes a task from the RTOS real time kernel's management.  The task being
+ * Removes a task from the RTOS real time kernel's management. The task being
  * deleted will be removed from all ready, blocked, suspended and event lists.
  *
  * Memory dynamically allocated by the task is not automatically freed, and
@@ -157,7 +189,8 @@ void delay(const uint32_t milliseconds);
  * be updated to reflect the time at which the task will unblock.
  *
  * \param prev_time
- *        A pointer to the location storing the setpoint time
+ *        A pointer to the location storing the setpoint time. This should
+ *        typically be initialized to the return value of millis().
  * \param delta
  *        The number of milliseconds to wait (1000 milliseconds per second)
  */

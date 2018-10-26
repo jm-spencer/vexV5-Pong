@@ -101,9 +101,21 @@ class ChassisControllerIntegrated : public virtual ChassisController {
   void stop() override;
 
   /**
+   * Sets a new maximum velocity in RPM [0-600].
+   *
+   * @param imaxVelocity the new maximum velocity
+   */
+  void setMaxVelocity(double imaxVelocity) override;
+
+  /**
    * Get the ChassisScales.
    */
   ChassisScales getChassisScales() const override;
+
+  /**
+   * Get the GearsetRatioPair.
+   */
+  AbstractMotor::GearsetRatioPair getGearsetRatioPair() const override;
 
   protected:
   Logger *logger;
@@ -112,7 +124,7 @@ class ChassisControllerIntegrated : public virtual ChassisController {
   std::unique_ptr<AsyncPosIntegratedController> rightController;
   int lastTarget;
   ChassisScales scales;
-  const double gearRatio;
+  AbstractMotor::GearsetRatioPair gearsetRatioPair;
 };
 } // namespace okapi
 

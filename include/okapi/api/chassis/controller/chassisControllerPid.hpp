@@ -118,16 +118,21 @@ class ChassisControllerPID : public virtual ChassisController {
    */
   ChassisScales getChassisScales() const override;
 
+  /**
+   * Get the GearsetRatioPair.
+   */
+  AbstractMotor::GearsetRatioPair getGearsetRatioPair() const override;
+
   protected:
   Logger *logger;
   std::unique_ptr<AbstractRate> rate;
   std::unique_ptr<IterativePosPIDController> distancePid;
   std::unique_ptr<IterativePosPIDController> anglePid;
   std::unique_ptr<IterativePosPIDController> turnPid;
-  const double gearRatio;
   ChassisScales scales;
-  bool doneLooping{true};
-  bool newMovement{false};
+  AbstractMotor::GearsetRatioPair gearsetRatioPair;
+  std::atomic_bool doneLooping{true};
+  std::atomic_bool newMovement{false};
   std::atomic_bool dtorCalled{false};
 
   static void trampoline(void *context);
